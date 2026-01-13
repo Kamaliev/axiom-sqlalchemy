@@ -1,0 +1,29 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Build
+        run: |
+          uv venv
+          uv pip install build
+          uv run python -m build
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
